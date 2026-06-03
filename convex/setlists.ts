@@ -69,3 +69,63 @@ export const getSetlistWithSongs = query({
     };
   },
 });
+
+
+export const updateSongOrder = mutation({
+  args: {
+    id: v.id("setlists"),
+
+    songIds: v.array(
+      v.id("songs")
+    ),
+  },
+
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      songIds: args.songIds,
+    });
+  },
+});
+
+export const updateSetlist = mutation({
+  args: {
+    id: v.id("setlists"),
+
+    title: v.string(),
+
+    date: v.string(),
+
+    leaders: v.array(
+      v.string()
+    ),
+
+    songIds: v.array(
+      v.id("songs")
+    ),
+  },
+
+  handler: async (ctx, args) => {
+    const { id, ...updates } =
+      args;
+
+    await ctx.db.patch(
+      id,
+      updates
+    );
+
+    return id;
+  },
+});
+
+
+export const deleteSetlist = mutation({
+  args: {
+    id: v.id("setlists"),
+  },
+
+  handler: async (ctx, args) => {
+    await ctx.db.delete(
+      args.id
+    );
+  },
+});

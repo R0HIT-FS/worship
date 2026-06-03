@@ -96,3 +96,19 @@ export const duplicateSong = mutation({
     return newId;
   },
 });
+
+
+export const getSongOptions = query({
+  args: {},
+
+  handler: async (ctx) => {
+    const songs = await ctx.db
+      .query("songs")
+      .collect();
+
+    return songs.map((song) => ({
+      _id: song._id,
+      title: song.title,
+    }));
+  },
+});
