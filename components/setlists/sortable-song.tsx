@@ -6,8 +6,10 @@ import { GripVertical } from "lucide-react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 
+import { Id } from "@/convex/_generated/dataModel";
+
 type Props = {
-  id: string;
+  id: Id<"songs">;
   title: string;
   index: number;
 };

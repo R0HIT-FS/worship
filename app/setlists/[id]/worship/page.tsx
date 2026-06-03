@@ -26,22 +26,38 @@ export default function WorshipPage() {
   const [fontSize, setFontSize] = useState(18);
 
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft") {
-        setCurrentIndex((prev) => Math.max(0, prev - 1));
-      }
+  if (!setlist) return;
 
-      if (e.key === "ArrowRight") {
-        setCurrentIndex((prev) =>
-          Math.min(setlist?.songs?.length - 1, prev + 1),
-        );
-      }
+  const maxIndex =
+    setlist.songs.length - 1;
+
+  function handleKeyDown(
+    e: KeyboardEvent
+  ) {
+    if (e.key === "ArrowLeft") {
+      setCurrentIndex((prev) =>
+        Math.max(0, prev - 1)
+      );
     }
 
-    window.addEventListener("keydown", handleKeyDown);
+    if (e.key === "ArrowRight") {
+      setCurrentIndex((prev) =>
+        Math.min(maxIndex, prev + 1)
+      );
+    }
+  }
 
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setlist]);
+  window.addEventListener(
+    "keydown",
+    handleKeyDown
+  );
+
+  return () =>
+    window.removeEventListener(
+      "keydown",
+      handleKeyDown
+    );
+}, [setlist]);
 
   const storageKey = `worship-${params.id}`;
 
@@ -83,14 +99,14 @@ export default function WorshipPage() {
         <Card>
           <CardContent className="p-4">
             <div className="space-y-2">
-              {setlist.songs.map((song, index) => (
+              {setlist?.songs?.map((song, index) => (
                 <Button
-                  key={song._id}
+                  key={song?._id}
                   variant={index === currentIndex ? "default" : "outline"}
                   className="w-full justify-start"
                   onClick={() => setCurrentIndex(index)}
                 >
-                  {index + 1}. {song.title}
+                  {index + 1}. {song?.title}
                 </Button>
               ))}
             </div>

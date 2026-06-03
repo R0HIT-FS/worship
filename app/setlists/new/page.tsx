@@ -8,6 +8,7 @@ import {
 } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 import { SetlistForm } from "@/components/setlists/setlist-form";
 
@@ -34,9 +35,11 @@ export default function NewSetlistPage() {
         data
       ) => {
         const id =
-          await createSetlist(
-            data
-          );
+          await createSetlist({
+            ...data,
+            songIds:
+              data.songIds as Id<"songs">[],
+          });
 
         router.push(
           `/setlists/${id}`

@@ -46,25 +46,23 @@ export const getSetlistWithSongs = query({
   },
 
   handler: async (ctx, args) => {
-    const setlist = await ctx.db.get(
-      args.id
-    );
+    const setlist = await ctx.db.get(args.id);
 
     if (!setlist) {
       return null;
     }
 
     const songs = await Promise.all(
-      setlist.songIds.map(
-        (songId) =>
-          ctx.db.get(songId)
+      setlist.songIds.map((songId) =>
+        ctx.db.get(songId)
       )
     );
 
     return {
       ...setlist,
       songs: songs.filter(
-        Boolean
+        (song): song is NonNullable<typeof song> =>
+          song !== null
       ),
     };
   },
