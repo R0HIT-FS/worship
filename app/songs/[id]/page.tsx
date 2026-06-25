@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { transposeSong } from "@/lib/transpose";
+import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
 
 export default function SongPage() {
   const params = useParams();
@@ -154,9 +155,12 @@ export default function SongPage() {
                   b
                 </Button>
               </div>
-              <pre className="whitespace-pre-wrap font-mono mt-4">
+              {/* <pre className="whitespace-pre-wrap font-mono mt-4">
                 {displayedLyricsWithChords}
-              </pre>
+              </pre> */}
+              <SongChordSheet
+              content={displayedLyricsWithChords}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>

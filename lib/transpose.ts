@@ -55,7 +55,7 @@ export type AccidentalPreference = "sharp" | "flat";
 function transposeNote(
   note: string,
   steps: number,
-  preference: AccidentalPreference
+  preference: AccidentalPreference,
 ) {
   const index = NOTE_INDEX[note];
 
@@ -65,25 +65,24 @@ function transposeNote(
 
   const newIndex = (index + steps + 12) % 12;
 
-  return preference === "flat"
-    ? FLAT_NOTES[newIndex]
-    : SHARP_NOTES[newIndex];
+  return preference === "flat" ? FLAT_NOTES[newIndex] : SHARP_NOTES[newIndex];
 }
 
 export function isChord(token: string) {
   return /^([A-G](#|b)?)(.*?)(\/([A-G](#|b)?))?$/.test(token);
 }
 
+const SECTION_REGEX =
+  /^(Verse|Chorus|Bridge|Tag|Outro|Intro|Pre-Chorus|End|Ending|Tab|Vamp)(\s+\d+)?$/i;
+
 export function transposeChord(
   chord: string,
   steps: number,
-  preference: AccidentalPreference = "sharp"
+  preference: AccidentalPreference = "sharp",
 ) {
   if (!isChord(chord)) return chord;
 
-  const parts = chord.match(
-    /^([A-G](#|b)?)(.*?)(\/([A-G](#|b)?))?$/
-  );
+  const parts = chord.match(/^([A-G](#|b)?)(.*?)(\/([A-G](#|b)?))?$/);
 
   if (!parts) return chord;
 
@@ -91,18 +90,10 @@ export function transposeChord(
   const quality = parts[3] || "";
   const bass = parts[5];
 
-  let result =
-    transposeNote(root, steps, preference) +
-    quality;
+  let result = transposeNote(root, steps, preference) + quality;
 
   if (bass) {
-    result +=
-      "/" +
-      transposeNote(
-        bass,
-        steps,
-        preference
-      );
+    result += "/" + transposeNote(bass, steps, preference);
   }
 
   return result;
@@ -111,15 +102,28 @@ export function transposeChord(
 export function transposeSong(
   text: string,
   steps: number,
-  preference: AccidentalPreference = "sharp"
+  preference: AccidentalPreference = "sharp",
 ) {
   if (steps === 0) return text;
 
+  //   return text.replace(/\[(.*?)\]/g, (_, token) => {
+  //     if (!isChord(token)) {
+  //       return `[${token}]`;
+  //     }
+
+  //     return `[${transposeChord(token, steps, preference)}]`;
+  //   });
   return text.replace(/\[(.*?)\]/g, (_, token) => {
-    if (!isChord(token)) {
-      return `[${token}]`;
+    const value = token.trim();
+
+    if (SECTION_REGEX.test(value)) {
+      return `[${value}]`;
     }
 
-    return `[${transposeChord(token, steps, preference)}]`;
+    if (!isChord(value)) {
+      return `[${value}]`;
+    }
+
+    return `[${transposeChord(value, steps, preference)}]`;
   });
 }
