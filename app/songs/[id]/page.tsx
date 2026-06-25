@@ -110,7 +110,9 @@ export default function SongPage() {
             </TabsContent>
 
             <TabsContent value="chords">
-              <div className="flex items-center gap-2 mt-4">
+              <div className="flex flex-wrap items-center gap-2 mt-4">
+
+                <p>Transpose:</p>
                 <Button
                   size="sm"
                   variant="outline"

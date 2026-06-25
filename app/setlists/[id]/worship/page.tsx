@@ -77,7 +77,7 @@ export default function WorshipPage() {
   const currentSong = setlist.songs[currentIndex];
 
   const displayedLyrics = showChords
-    ? <><SongChordSheet content={transposeSong(currentSong.lyricsWithChords, transpose, preference)}/></>
+    ? <><SongChordSheet content={transposeSong(currentSong.lyricsWithChords, transpose, preference)} fontSize={fontSize}/></>
     : currentSong.lyrics;
 
   if (!currentSong) {
@@ -114,7 +114,7 @@ export default function WorshipPage() {
 
         <Card>
           <CardContent className="p-6 pb-24 md:pb-0">
-            <div className="flex flex-wrap items-center gap-2 mb-6">
+            {<div className="flex flex-wrap items-center gap-2 mb-6 ">
               <p>Font Size : </p>
               <Button
                 variant="outline"
@@ -129,7 +129,7 @@ export default function WorshipPage() {
               >
                 A+
               </Button>
-            </div>
+            </div>}
             <div className="flex flex-wrap gap-2 mb-6">
               <Button
                 variant={!showChords ? "default" : "outline"}

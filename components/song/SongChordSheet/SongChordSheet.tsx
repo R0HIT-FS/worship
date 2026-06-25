@@ -3,13 +3,19 @@ import ChordLine from "./ChordLine";
 
 interface Props {
   content: string;
+  fontSize: number | string;
 }
 
-export default function SongChordSheet({ content }: Props) {
+export default function SongChordSheet({ content, fontSize }: Props) {
   const sections = parseSong(content);
 
   return (
-    <div className="space-y-8 text-base">
+    <div
+      className="space-y-8 text-base"
+      style={{
+        fontSize: `${fontSize}px`,
+      }}
+    >
       {/* {sections.map((section, index) => (
         <div key={index}>
           {section.title && (
