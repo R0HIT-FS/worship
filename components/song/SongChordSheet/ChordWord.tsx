@@ -9,7 +9,7 @@ export default function ChordWord({
 }: Props) {
   return (
     <span className="inline-flex flex-col align-top whitespace-pre">
-      <span className="h-5 text-sm font-semibold text-blue-600">
+      <span className="h-5 text-md font-semibold text-blue-600">
         {chord ?? ""}
       </span>
 

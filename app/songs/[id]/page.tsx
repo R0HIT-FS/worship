@@ -104,7 +104,7 @@ export default function SongPage() {
             </TabsList>
 
             <TabsContent value="lyrics">
-              <pre className="whitespace-pre-wrap font-sans mt-4">
+              <pre className="whitespace-pre-wrap font-sans mt-4 text-sm sm:text-[16px]">
                 {song.lyrics}
               </pre>
             </TabsContent>
