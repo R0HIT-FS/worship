@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { transposeSong } from "@/lib/transpose";
+import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
 
 export default function WorshipPage() {
   const params = useParams();
@@ -76,7 +77,7 @@ export default function WorshipPage() {
   const currentSong = setlist.songs[currentIndex];
 
   const displayedLyrics = showChords
-    ? transposeSong(currentSong.lyricsWithChords, transpose, preference)
+    ? <><SongChordSheet content={transposeSong(currentSong.lyricsWithChords, transpose, preference)}/></>
     : currentSong.lyrics;
 
   if (!currentSong) {

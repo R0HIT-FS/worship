@@ -95,7 +95,7 @@ export default function EditSongPage() {
   }
 
   return (
-    <div className="container max-w-5xl py-6">
+    <div className="container max-w-5xl p-6">
       <div className="flex gap-2 mb-6">
         <Button
           variant="outline"
