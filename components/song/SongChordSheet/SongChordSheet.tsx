@@ -40,7 +40,7 @@ export default function SongChordSheet({ content, fontSize }: Props) {
           </div>
         </div>
       ))} */}
-
+  
       {sections.map((section, index) => (
         <section key={index} className="mb-10">
           {section.title && (
