@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 
 import { Card, CardContent } from "@/components/ui/card";
 
+import { transposeSong } from "@/lib/transpose";
+
 export default function WorshipPage() {
   const params = useParams();
 
@@ -25,39 +27,29 @@ export default function WorshipPage() {
 
   const [fontSize, setFontSize] = useState(18);
 
+  const [transpose, setTranspose] = useState(0);
+
+  const [preference, setPreference] = useState<"sharp" | "flat">("sharp");
+
   useEffect(() => {
-  if (!setlist) return;
+    if (!setlist) return;
 
-  const maxIndex =
-    setlist.songs.length - 1;
+    const maxIndex = setlist.songs.length - 1;
 
-  function handleKeyDown(
-    e: KeyboardEvent
-  ) {
-    if (e.key === "ArrowLeft") {
-      setCurrentIndex((prev) =>
-        Math.max(0, prev - 1)
-      );
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") {
+        setCurrentIndex((prev) => Math.max(0, prev - 1));
+      }
+
+      if (e.key === "ArrowRight") {
+        setCurrentIndex((prev) => Math.min(maxIndex, prev + 1));
+      }
     }
 
-    if (e.key === "ArrowRight") {
-      setCurrentIndex((prev) =>
-        Math.min(maxIndex, prev + 1)
-      );
-    }
-  }
+    window.addEventListener("keydown", handleKeyDown);
 
-  window.addEventListener(
-    "keydown",
-    handleKeyDown
-  );
-
-  return () =>
-    window.removeEventListener(
-      "keydown",
-      handleKeyDown
-    );
-}, [setlist]);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setlist]);
 
   const storageKey = `worship-${params.id}`;
 
@@ -82,6 +74,10 @@ export default function WorshipPage() {
   }
 
   const currentSong = setlist.songs[currentIndex];
+
+  const displayedLyrics = showChords
+    ? transposeSong(currentSong.lyricsWithChords, transpose, preference)
+    : currentSong.lyrics;
 
   if (!currentSong) {
     return <div className="p-6">No songs in setlist</div>;
@@ -149,6 +145,52 @@ export default function WorshipPage() {
               </Button>
             </div>
 
+            {showChords && (
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <p>Transpose:</p>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setTranspose((t) => t - 1)}
+                >
+                  -1
+                </Button>
+
+                <span className="w-10 text-center font-medium">
+                  {transpose > 0 ? `+${transpose}` : transpose}
+                </span>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setTranspose((t) => t + 1)}
+                >
+                  +1
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setTranspose(0)}
+                >
+                  Reset
+                </Button>
+
+                <Button
+                  variant={preference === "sharp" ? "default" : "outline"}
+                  onClick={() => setPreference("sharp")}
+                >
+                  #
+                </Button>
+
+                <Button
+                  variant={preference === "flat" ? "default" : "outline"}
+                  onClick={() => setPreference("flat")}
+                >
+                  b
+                </Button>
+              </div>
+            )}
+
             <h2 className="text-2xl font-bold mb-6">{currentSong.title}</h2>
 
             <pre
@@ -157,7 +199,7 @@ export default function WorshipPage() {
                 fontSize: `${fontSize}px`,
               }}
             >
-              {showChords ? currentSong.lyricsWithChords : currentSong.lyrics}
+              {displayedLyrics}
             </pre>
 
             <div

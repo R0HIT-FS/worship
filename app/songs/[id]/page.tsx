@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { transposeSong } from "@/lib/transpose";
 
 export default function SongPage() {
   const params = useParams();
@@ -27,6 +29,10 @@ export default function SongPage() {
     id: params.id as any,
   });
 
+  const [transpose, setTranspose] = useState(0);
+
+  const [preference, setPreference] = useState<"sharp" | "flat">("sharp");
+
   async function handleDelete() {
     const confirmed = window.confirm(`Delete "${song?.title}"?`);
 
@@ -40,17 +46,14 @@ export default function SongPage() {
   }
 
   async function handleDuplicate() {
-  if (!song) return;
+    if (!song) return;
 
-  const newSongId =
-    await duplicateSong({
+    const newSongId = await duplicateSong({
       id: song._id,
     });
 
-  router.push(
-    `/songs/${newSongId}`
-  );
-}
+    router.push(`/songs/${newSongId}`);
+  }
 
   if (song === undefined) {
     return <div className="container p-6">Loading...</div>;
@@ -60,43 +63,27 @@ export default function SongPage() {
     return <div className="container py-6">Song not found</div>;
   }
 
+  const displayedLyricsWithChords = transposeSong(
+    song.lyricsWithChords,
+    transpose,
+    preference,
+  );
+
   return (
     <div className="container w-full p-6">
-<div className="flex gap-2 mb-6">
-  {/* <Button
-    asChild
-    variant="outline"
-  >
-    <Link href="/songs">
-      Back To Songs
-    </Link>
-  </Button> */}
+      <div className="flex gap-2 mb-6">
+        <Button asChild variant="outline">
+          <Link href={`/songs/${song._id}/edit`}>Edit</Link>
+        </Button>
 
-  <Button
-    asChild
-    variant="outline"
-  >
-    <Link
-      href={`/songs/${song._id}/edit`}
-    >
-      Edit
-    </Link>
-  </Button>
+        <Button variant="outline" onClick={handleDuplicate}>
+          Duplicate
+        </Button>
 
-  <Button
-    variant="outline"
-    onClick={handleDuplicate}
-  >
-    Duplicate
-  </Button>
-
-  <Button
-    variant="destructive"
-    onClick={handleDelete}
-  >
-    Delete
-  </Button>
-</div>
+        <Button variant="destructive" onClick={handleDelete}>
+          Delete
+        </Button>
+      </div>
 
       <Card>
         <CardHeader>
@@ -122,8 +109,53 @@ export default function SongPage() {
             </TabsContent>
 
             <TabsContent value="chords">
+              <div className="flex items-center gap-2 mt-4">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setTranspose((t) => t - 1)}
+                >
+                  −
+                </Button>
+
+                <span className="w-10 text-center">
+                  {transpose > 0 ? `+${transpose}` : transpose}
+                </span>
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setTranspose((t) => t + 1)}
+                >
+                  +
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setTranspose(0)}
+                >
+                  Reset
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant={preference === "sharp" ? "default" : "outline"}
+                  onClick={() => setPreference("sharp")}
+                >
+                  #
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant={preference === "flat" ? "default" : "outline"}
+                  onClick={() => setPreference("flat")}
+                >
+                  b
+                </Button>
+              </div>
               <pre className="whitespace-pre-wrap font-mono mt-4">
-                {song.lyricsWithChords}
+                {displayedLyricsWithChords}
               </pre>
             </TabsContent>
           </Tabs>
