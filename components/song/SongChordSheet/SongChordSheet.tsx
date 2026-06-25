@@ -3,7 +3,7 @@ import ChordLine from "./ChordLine";
 
 interface Props {
   content: string;
-  fontSize: number | string;
+  fontSize?: number | string;
 }
 
 export default function SongChordSheet({ content, fontSize }: Props) {
