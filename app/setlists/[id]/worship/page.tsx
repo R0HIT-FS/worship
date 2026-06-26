@@ -154,7 +154,7 @@ export default function WorshipPage() {
                   variant="outline"
                   onClick={() => setTranspose((t) => t - 1)}
                 >
-                  -1
+                  -
                 </Button>
 
                 <span className="w-10 text-center font-medium">
@@ -165,7 +165,7 @@ export default function WorshipPage() {
                   variant="outline"
                   onClick={() => setTranspose((t) => t + 1)}
                 >
-                  +1
+                  +
                 </Button>
 
                 <Button
