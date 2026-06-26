@@ -83,8 +83,8 @@ export default function EditSetlistPage() {
   }
 
   return (
-    <div className="w-full p-6">
-      <div className="flex gap-2 mb-6">
+    <div className="w-full">
+      <div className="flex gap-2 mb-6 px-6 pt-6">
         <Button
           variant="outline"
           asChild
