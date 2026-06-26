@@ -44,12 +44,12 @@ export function SortableSong({
       className="border rounded-lg bg-background"
     >
       <div className="flex items-center">
-        <Link
-          href={`/songs/${id}`}
+        <div
+          // href={`/songs/${id}`}
           className="flex-1 p-4"
         >
           {index + 1}. {title}
-        </Link>
+        </div>
 
         <button
           type="button"
