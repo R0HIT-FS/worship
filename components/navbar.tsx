@@ -64,8 +64,8 @@ export function Navbar() {
                   "rounded-md px-3 py-2 text-sm font-medium transition-colors",
 
                   active
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted"
+                    ? "text-black font-bold"
+                    : "hover:bg-muted text-muted-foreground"
                 )}
               >
                 {link.label}
