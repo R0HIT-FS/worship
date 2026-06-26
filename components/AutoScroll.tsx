@@ -13,10 +13,10 @@ export default function AutoScroll({ targetRef }: AutoScrollProps) {
   const lastTimestamp = useRef(0);
   const pauseTimeout = useRef<NodeJS.Timeout | null>(null);
   const scrollAccumulator = useRef(0);
-  const speedRef = useRef(60);
+  const speedRef = useRef(30);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const [speed, setSpeed] = useState(60);
+  const [speed, setSpeed] = useState(30);
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
