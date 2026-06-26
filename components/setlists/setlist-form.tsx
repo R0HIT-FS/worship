@@ -148,7 +148,7 @@ export function SetlistForm({
         }
       />
 
-      <Input
+      {/* <Input
         type="date"
         value={date}
         onChange={(e) =>
@@ -156,7 +156,7 @@ export function SetlistForm({
             e.target.value
           )
         }
-      />
+      /> */}
 
       <Input
         placeholder="Leaders"

@@ -17,6 +17,7 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 
 import { SetlistForm } from "@/components/setlists/setlist-form";
+import { Trash } from "lucide-react";
 
 export default function EditSetlistPage() {
   const params = useParams();
@@ -101,7 +102,7 @@ export default function EditSetlistPage() {
             handleDelete
           }
         >
-          Delete
+          <Trash/>
         </Button>
       </div>
 

@@ -29,6 +29,7 @@ import {
 } from "@dnd-kit/core";
 
 import { SortableSong } from "@/components/setlists/sortable-song";
+import { SquarePen } from "lucide-react";
 
 type Song = {
   _id: Id<"songs">;
@@ -103,11 +104,11 @@ export default function SetlistPage() {
   return (
     <div className="w-full p-6">
       <div className="mb-6 flex gap-2">
-        <Button asChild>
-          <Link href={`/setlists/${setlist._id}/edit`}>Edit</Link>
+        <Button asChild variant={'outline'} title="Edit">
+          <Link href={`/setlists/${setlist._id}/edit`}><SquarePen /></Link>
         </Button>
 
-        <Button asChild>
+        <Button asChild variant={'outline'}>
           <Link href={`/setlists/${setlist._id}/worship`}>Worship Mode</Link>
         </Button>
       </div>

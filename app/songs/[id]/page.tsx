@@ -17,6 +17,7 @@ import { useState } from "react";
 import { transposeSong } from "@/lib/transpose";
 import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
 import AutoScroll from "@/components/AutoScroll";
+import { SquarePen, Trash } from "lucide-react";
 
 export default function SongPage() {
   const params = useParams();
@@ -74,16 +75,16 @@ export default function SongPage() {
   return (
     <div className="container w-full p-6">
       <div className="flex gap-2 mb-6">
-        <Button asChild variant="outline">
-          <Link href={`/songs/${song._id}/edit`}>Edit</Link>
+        <Button asChild variant="outline" title="Edit">
+          <Link href={`/songs/${song._id}/edit`}><SquarePen /></Link>
         </Button>
 
-        <Button variant="outline" onClick={handleDuplicate}>
+        {/* <Button variant="outline" onClick={handleDuplicate}>
           Duplicate
-        </Button>
+        </Button> */}
 
-        <Button variant="destructive" onClick={handleDelete}>
-          Delete
+        <Button variant="destructive" onClick={handleDelete} title="Delete">
+          <Trash />
         </Button>
       </div>
 
