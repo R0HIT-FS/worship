@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useParams } from "next/navigation";
 
@@ -14,6 +14,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { transposeSong } from "@/lib/transpose";
 import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
+import AutoScroll from "@/components/AutoScroll";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 export default function WorshipPage() {
   const params = useParams();
@@ -31,6 +33,8 @@ export default function WorshipPage() {
   const [transpose, setTranspose] = useState(0);
 
   const [preference, setPreference] = useState<"sharp" | "flat">("sharp");
+
+  const lyricsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!setlist) return;
@@ -66,6 +70,13 @@ export default function WorshipPage() {
     localStorage.setItem(storageKey, String(currentIndex));
   }, [currentIndex, storageKey]);
 
+    useEffect(() => {
+    lyricsRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [currentIndex]);
+
   if (setlist === undefined) {
     return <div className="p-6">Loading...</div>;
   }
@@ -76,9 +87,20 @@ export default function WorshipPage() {
 
   const currentSong = setlist.songs[currentIndex];
 
-  const displayedLyrics = showChords
-    ? <><SongChordSheet content={transposeSong(currentSong.lyricsWithChords, transpose, preference)} fontSize={fontSize}/></>
-    : currentSong.lyrics;
+  const displayedLyrics = showChords ? (
+    <>
+      <SongChordSheet
+        content={transposeSong(
+          currentSong.lyricsWithChords,
+          transpose,
+          preference,
+        )}
+        fontSize={fontSize}
+      />
+    </>
+  ) : (
+    currentSong.lyrics
+  );
 
   if (!currentSong) {
     return <div className="p-6">No songs in setlist</div>;
@@ -90,7 +112,7 @@ export default function WorshipPage() {
         <h1 className="text-3xl font-bold">{setlist.title}</h1>
       </div>
 
-      <div className="grid lg:grid-cols-[300px_1fr] gap-6">
+      <div className="grid lg:grid-cols-[300px_1fr] gap-6" ref={lyricsRef}>
         {/* SONG LIST */}
 
         <Card>
@@ -114,22 +136,24 @@ export default function WorshipPage() {
 
         <Card>
           <CardContent className="p-6 pb-24 md:pb-0">
-            {<div className="flex flex-wrap items-center gap-2 mb-6 ">
-              <p>Font Size : </p>
-              <Button
-                variant="outline"
-                onClick={() => setFontSize((v) => Math.max(12, v - 2))}
-              >
-                A-
-              </Button>
+            {
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <p>Font Size : </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setFontSize((v) => Math.max(12, v - 2))}
+                >
+                  A-
+                </Button>
 
-              <Button
-                variant="outline"
-                onClick={() => setFontSize((v) => Math.min(48, v + 2))}
-              >
-                A+
-              </Button>
-            </div>}
+                <Button
+                  variant="outline"
+                  onClick={() => setFontSize((v) => Math.min(48, v + 2))}
+                >
+                  A+
+                </Button>
+              </div>
+            }
             <div className="flex flex-wrap gap-2 mb-6">
               <Button
                 variant={!showChords ? "default" : "outline"}
@@ -213,7 +237,7 @@ export default function WorshipPage() {
     flex
     gap-2
     rounded-lg
-    border
+    border-0
     bg-background
     p-2
     shadow-lg
@@ -229,7 +253,7 @@ export default function WorshipPage() {
   "
             >
               <Button
-                className="flex-1"
+                className="flex-1 hidden md:flex"
                 disabled={currentIndex === 0}
                 onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
               >
@@ -237,7 +261,27 @@ export default function WorshipPage() {
               </Button>
 
               <Button
-                className="flex-1"
+                className="flex-1 flex md:hidden max-w-[40px]"
+                disabled={currentIndex === 0}
+                onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
+              >
+                <ArrowLeft />
+              </Button>
+
+              <Button
+                className="flex-1 flex md:hidden max-w-[40px]"
+                disabled={currentIndex === setlist.songs.length - 1}
+                onClick={() =>
+                  setCurrentIndex((prev) =>
+                    Math.min(setlist.songs.length - 1, prev + 1),
+                  )
+                }
+              >
+                <ArrowRight />
+              </Button>
+
+              <Button
+                className="flex-1 hidden md:flex"
                 disabled={currentIndex === setlist.songs.length - 1}
                 onClick={() =>
                   setCurrentIndex((prev) =>
@@ -251,6 +295,7 @@ export default function WorshipPage() {
           </CardContent>
         </Card>
       </div>
+      <AutoScroll />
     </div>
   );
 }

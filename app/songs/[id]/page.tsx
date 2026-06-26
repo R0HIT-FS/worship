@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { transposeSong } from "@/lib/transpose";
 import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
+import AutoScroll from "@/components/AutoScroll";
 
 export default function SongPage() {
   const params = useParams();
@@ -167,6 +168,7 @@ export default function SongPage() {
           </Tabs>
         </CardContent>
       </Card>
+      <AutoScroll/>
     </div>
   );
 }
