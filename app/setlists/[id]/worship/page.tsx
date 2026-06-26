@@ -15,7 +15,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { transposeSong } from "@/lib/transpose";
 import SongChordSheet from "@/components/song/SongChordSheet/SongChordSheet";
 import AutoScroll from "@/components/AutoScroll";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 
 export default function WorshipPage() {
   const params = useParams();
@@ -28,13 +37,15 @@ export default function WorshipPage() {
 
   const [showChords, setShowChords] = useState(false);
 
-  const [fontSize, setFontSize] = useState(18);
+  const [fontSize, setFontSize] = useState(16);
 
   const [transpose, setTranspose] = useState(0);
 
   const [preference, setPreference] = useState<"sharp" | "flat">("sharp");
 
   const lyricsRef = useRef<HTMLDivElement>(null);
+
+  const [openSearch, setOpenSearch] = useState(false);
 
   useEffect(() => {
     if (!setlist) return;
@@ -70,12 +81,25 @@ export default function WorshipPage() {
     localStorage.setItem(storageKey, String(currentIndex));
   }, [currentIndex, storageKey]);
 
-    useEffect(() => {
+  useEffect(() => {
     lyricsRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   }, [currentIndex]);
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpenSearch((open) => !open);
+      }
+    };
+
+    document.addEventListener("keydown", down);
+
+    return () => document.removeEventListener("keydown", down);
+  }, []);
 
   if (setlist === undefined) {
     return <div className="p-6">Loading...</div>;
@@ -112,10 +136,10 @@ export default function WorshipPage() {
         <h1 className="text-3xl font-bold">{setlist.title}</h1>
       </div>
 
-      <div className="grid lg:grid-cols-[300px_1fr] gap-6" ref={lyricsRef}>
+      <div className="grid lg:w-full gap-6" ref={lyricsRef}>
         {/* SONG LIST */}
 
-        <Card>
+        {/* <Card>
           <CardContent className="p-4">
             <div className="space-y-2">
               {setlist?.songs?.map((song, index) => (
@@ -130,25 +154,28 @@ export default function WorshipPage() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* LYRICS */}
 
         <Card>
           <CardContent className="p-6 pb-24 md:pb-0">
+            <p className="text-xs text-muted-foreground mb-4">
+              Press <kbd>Ctrl</kbd> + <kbd>K</kbd> or <span className="text-bold text-black underline cursor-pointer" onClick={() => setOpenSearch(true)}>click here</span> to search songs 
+            </p>
             {
               <div className="flex flex-wrap items-center gap-2 mb-6">
                 <p>Font Size : </p>
                 <Button
                   variant="outline"
-                  onClick={() => setFontSize((v) => Math.max(12, v - 2))}
+                  onClick={() => setFontSize((v) => Math.max(14, v - 2))}
                 >
                   A-
                 </Button>
 
                 <Button
                   variant="outline"
-                  onClick={() => setFontSize((v) => Math.min(48, v + 2))}
+                  onClick={() => setFontSize((v) => Math.min(28, v + 2))}
                 >
                   A+
                 </Button>
@@ -253,7 +280,7 @@ export default function WorshipPage() {
   "
             >
               <Button
-                className="flex-1 hidden md:flex"
+                className="flex-1 hidden lg:flex"
                 disabled={currentIndex === 0}
                 onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
               >
@@ -261,15 +288,24 @@ export default function WorshipPage() {
               </Button>
 
               <Button
-                className="flex-1 flex md:hidden max-w-[40px]"
+                className="flex-1 flex lg:hidden max-w-[40px]"
                 disabled={currentIndex === 0}
                 onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
               >
                 <ArrowLeft />
               </Button>
+              <Button
+              variant="outline"
+                className="flex-1 flex lg:hidden max-w-[40px]"
+                onClick={() => setOpenSearch(true)}
+              >
+                <Search />
+              </Button>
+
+
 
               <Button
-                className="flex-1 flex md:hidden max-w-[40px]"
+                className="flex-1 flex lg:hidden max-w-[40px]"
                 disabled={currentIndex === setlist.songs.length - 1}
                 onClick={() =>
                   setCurrentIndex((prev) =>
@@ -281,7 +317,7 @@ export default function WorshipPage() {
               </Button>
 
               <Button
-                className="flex-1 hidden md:flex"
+                className="flex-1 hidden lg:flex"
                 disabled={currentIndex === setlist.songs.length - 1}
                 onClick={() =>
                   setCurrentIndex((prev) =>
@@ -296,6 +332,30 @@ export default function WorshipPage() {
         </Card>
       </div>
       <AutoScroll />
+      <CommandDialog open={openSearch} onOpenChange={setOpenSearch}>
+        <Command>
+          <CommandInput placeholder="Jump to a song..." />
+
+          <CommandList>
+            <CommandEmpty>No songs found.</CommandEmpty>
+
+            <CommandGroup heading="Songs">
+              {setlist.songs.map((song, index) => (
+                <CommandItem
+                  key={song._id}
+                  value={song.title}
+                  onSelect={() => {
+                    setCurrentIndex(index);
+                    setOpenSearch(false);
+                  }}
+                >
+                  {song.title}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </CommandDialog>
     </div>
   );
 }
